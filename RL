@@ -1,0 +1,77 @@
+/*
+Buendia Rodriguez Jose Manuel
+19011231
+Hands-on 3 - Simulation
+*/
+#include<stdio.h>
+#include<math.h>
+
+
+double line[5][2]={{3, 1},{2, 2},{3, 3},{4, 4},{5, 5}};
+double pot[5][2]={{1, 1},{2, 4},{3, 9},{4,16},{5, 25}};
+double loga[5][2]={{1,0},{2,0.69},{3,1.09},{4,1.38},{5,1.6}};
+double expo[5][2]={{1,2.71828},{2,7.38905},{3,20.08553},{4,54.59815},{5,148.41316}};
+
+
+double sumx, sumy, sumxx, sumxy, tmp[5][2];
+double regresion(double Tmp[5][2], int l,double *A, double *B);
+
+int L;
+
+int main(void){
+
+  double a, b;
+  int i;
+  L=5;
+
+  // Linea
+  regresion(tmp,L,&a,&b);
+  printf("Lineal: a=%.10f y b=%.4f\n", a, b);
+
+  // Curva potencial
+  for(i=0;i<L;i++)
+  {
+    tmp[i][0]=(double)log(pot[i][0]);
+    tmp[i][1]=(double)log(pot[i][1]);
+  }
+  regresion(tmp,L,&a,&b);
+  printf("Potencial: a=%.10f y b=%.4f\n", a, b);
+
+  //Curva logaritmica
+  for(i=0;i<L;i++)
+  {
+    tmp[i][0]=(double)log(loga[i][0]);
+    tmp[i][1]=loga[i][1];
+  }
+  regresion(tmp,L,&a,&b);
+  printf("Logaritmica: a=%.10f y b=%.4f\n", a, b);
+
+  //Curva exponencial
+  for(i=0;i<L;i++)
+  {
+    tmp[i][0]=expo[i][0];
+    tmp[i][1]=(double)log(expo[i][1]);
+  }
+  regresion(tmp,L,&a,&b);
+  printf("Exponencial: a=%.10f y b=%.4f\n", a, b);
+  //cout<<b;
+  return 0;
+}
+
+//Regresion lineal
+double regresion(double Tmp[5][2], int l,double *A, double *B){
+  int i;
+  double SumX,SumY,SumXX,SumXY,D;
+
+  for(i=0;i<l;i++)
+  {
+    SumX += Tmp[i][0];
+    SumY += Tmp[i][1];
+    SumXX += Tmp[i][0]*Tmp[i][0];
+    SumXY += Tmp[i][0]*Tmp[i][1];
+  }
+  D = l*SumXX-SumX*SumX;
+  *A = (SumXX*SumY-SumX*SumXY)/D;
+  *B = (l*SumXY-SumX*SumY)/D;
+  return *A,*B;
+}
